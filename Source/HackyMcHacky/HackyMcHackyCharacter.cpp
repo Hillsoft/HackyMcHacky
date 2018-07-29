@@ -8,6 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Runtime/Engine/Classes/Engine/World.h"
+#include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AHackyMcHackyCharacter
@@ -74,6 +76,8 @@ void AHackyMcHackyCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AHackyMcHackyCharacter::OnResetVR);
+
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AHackyMcHackyCharacter::OnInteract);
 }
 
 
@@ -90,6 +94,43 @@ void AHackyMcHackyCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector
 void AHackyMcHackyCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
+}
+
+void AHackyMcHackyCharacter::OnInteract()
+{
+	UWorld* World = GetWorld();
+	AActor* ActorToIgnore = this;
+
+	APlayerController* PController = (APlayerController*)Controller;
+	FVector Start = PController->GetFocalLocation();
+	FVector End = Start + PController->GetControlRotation().Vector() * 256;
+
+	ECollisionChannel CollisionChannel = ECC_Pawn;
+
+	FHitResult HitData(ForceInit);
+
+	if (!World)
+	{
+		return;
+	}
+
+	FCollisionQueryParams TraceParams(FName(TEXT("Interact Trace")), true, ActorToIgnore);
+	TraceParams.bTraceComplex = true;
+	TraceParams.bReturnPhysicalMaterial = false;
+
+	TraceParams.AddIgnoredActor(ActorToIgnore);
+
+	World->LineTraceSingleByChannel(
+		HitData,
+		Start,
+		End,
+		CollisionChannel,
+		TraceParams
+	);
+
+	AActor* HitActor = HitData.GetActor();
+
+	UE_LOG(LogTemp, Display, TEXT("Interact Hit Actor: %s"), *GetNameSafe(HitActor));
 }
 
 void AHackyMcHackyCharacter::TurnAtRate(float Rate)
