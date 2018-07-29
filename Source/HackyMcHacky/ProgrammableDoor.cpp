@@ -19,6 +19,7 @@ AProgrammableDoor::AProgrammableDoor()
 	{
 		doorFrameComponent->SetStaticMesh(frameAssett.Object);
 		doorFrameComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		doorFrameComponent->SetMobility(EComponentMobility::Static);
 	}
 
 	doorComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
