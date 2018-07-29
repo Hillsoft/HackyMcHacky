@@ -46,6 +46,12 @@ void AProgrammableDoor::BeginPlay()
 void AProgrammableDoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
+void AProgrammableDoor::Interact_Implementation()
+{
+	if (!locked)
+	{
+		doorComponent->SetRelativeLocation(FVector(0.0f, 0.0f, -200.0f));
+	}
+}

@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "InteractableObject.h"
 #include "ProgrammableDoor.generated.h"
 
 UCLASS()
-class HACKYMCHACKY_API AProgrammableDoor : public AActor
+class HACKYMCHACKY_API AProgrammableDoor : public AActor, public IInteractableObject
 {
 	GENERATED_BODY()
 	
@@ -32,4 +33,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		UStaticMeshComponent* doorComponent;
 	
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+		void Interact();
+	virtual void Interact_Implementation() override;
 };

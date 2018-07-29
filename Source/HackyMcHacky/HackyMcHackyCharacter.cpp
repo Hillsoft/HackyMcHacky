@@ -11,6 +11,8 @@
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Runtime/Engine/Classes/GameFramework/PlayerController.h"
 
+#include "InteractableObject.h"
+
 //////////////////////////////////////////////////////////////////////////
 // AHackyMcHackyCharacter
 
@@ -131,6 +133,12 @@ void AHackyMcHackyCharacter::OnInteract()
 	AActor* HitActor = HitData.GetActor();
 
 	UE_LOG(LogTemp, Display, TEXT("Interact Hit Actor: %s"), *GetNameSafe(HitActor));
+
+	IInteractableObject* Interactable = Cast<IInteractableObject>(HitActor);
+	if (Interactable)
+	{
+		Interactable->Execute_Interact(HitActor);
+	}
 }
 
 void AHackyMcHackyCharacter::TurnAtRate(float Rate)
